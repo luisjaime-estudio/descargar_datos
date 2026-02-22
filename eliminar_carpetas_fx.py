@@ -2,29 +2,46 @@ import os
 import shutil
 from pathlib import Path
 
+
 def eliminar_carpetas_fx(directorio_base: str):
     """
-    Busca y elimina todas las carpetas llamadas 'fx' de forma recursiva.
+    Busca y elimina de forma recursiva:
+      - Todas las carpetas llamadas 'fx'.
+      - Todos los ficheros cuyo nombre contenga '_fx_'.
     """
     path_base = Path(directorio_base)
-    contador = 0
-    
-    print(f"Iniciando búsqueda de carpetas 'fx' en: {path_base}")
-    
-    # Usamos rglob para buscar carpetas llamadas 'fx'
+    contador_carpetas = 0
+    contador_ficheros = 0
+
+    print(f"Iniciando búsqueda en: {path_base}\n")
+
+    # ── 1. Carpetas llamadas 'fx' ────────────────────────────────────────────
     for p in path_base.rglob("fx"):
         if p.is_dir():
             try:
-                print(f"Eliminando: {p}")
+                print(f"[CARPETA] Eliminando: {p}")
                 shutil.rmtree(p)
-                contador += 1
+                contador_carpetas += 1
             except Exception as e:
-                print(f"Error al eliminar {p}: {e}")
-                
-    print(f"\nProceso finalizado. Se eliminaron {contador} carpetas 'fx'.")
+                print(f"  ✗ Error al eliminar carpeta {p}: {e}")
+
+    # ── 2. Ficheros cuyo nombre contiene '_fx_' ──────────────────────────────
+    for p in path_base.rglob("*_fx_*"):
+        if p.is_file():
+            try:
+                print(f"[FICHERO] Eliminando: {p}")
+                p.unlink()
+                contador_ficheros += 1
+            except Exception as e:
+                print(f"  ✗ Error al eliminar fichero {p}: {e}")
+
+    print(
+        f"\nProceso finalizado."
+        f"\n  Carpetas 'fx' eliminadas : {contador_carpetas}"
+        f"\n  Ficheros '_fx_' eliminados: {contador_ficheros}"
+    )
+
 
 if __name__ == "__main__":
-    # DIRECTORIO_ACTUAL = os.getcwd()
-    # Usamos la ruta absoluta proporcionada en el contexto
-    DIRECTORIO_TRABAJO = r"f:\datos\Desktop\prueba_descarga"
+    DIRECTORIO_TRABAJO = r"f:\datos\Desktop\GIT\descargar_datos\datos"
     eliminar_carpetas_fx(DIRECTORIO_TRABAJO)

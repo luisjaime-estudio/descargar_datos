@@ -585,23 +585,23 @@ class AnalizadorNetCDF:
         try:
             self._imprimir_seccion("GENERACION DE REPORTE EXCEL")
 
-            ruta_salida = self.directorio / "informe_calidad_datos.xlsx"
+            ruta_salida = self.directorio / "informe_calidad_datos_v2.xlsx"
             estilos = self._crear_estilos_excel()
 
             wb = Workbook()
             wb.remove(wb.active)
 
             self._escribir_pestana_resumen(wb, estilos)
-            self._escribir_pestana_detalle(wb, estilos)
-            self._escribir_pestana_agregados(wb, estilos)
+            # self._escribir_pestana_detalle(wb, estilos)
+            # self._escribir_pestana_agregados(wb, estilos)
 
             wb.save(ruta_salida)
 
             print(f"\n[DONE] Reporte Excel guardado en: {ruta_salida}")
             print(f"\nPestanas incluidas:")
             print(f"  1. Resumen Ejecutivo - Informe general de calidad")
-            print(f"  2. Metricas Detalladas - Datos por anio de inicializacion")
-            print(f"  3. Metricas Agregadas - Resumen por combinacion source_id/variant_label")
+            # print(f"  2. Metricas Detalladas - Datos por anio de inicializacion")
+            # print(f"  3. Metricas Agregadas - Resumen por combinacion source_id/variant_label")
 
         except Exception as e:
             print(f"  [X] Error generando reporte Excel: {e}")
