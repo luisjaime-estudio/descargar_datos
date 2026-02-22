@@ -36,7 +36,6 @@ class ConfiguracionBusqueda:
     source_id: Optional[str] = None
     grid_label: str = "gr"
     variant_label: str = "r1i4p1f1"
-    sub_experiment_id: str = "s2003"
     latest: bool = True
 
     def __post_init__(self) -> None:
@@ -502,6 +501,10 @@ class DescargadorDatosESGF:
 
 
 if __name__ == "__main__":
+    """
+    Ejemplo de uso:
+    python descargar_datos.py --source_id MIROC6 --directorio_salida datos
+    """
     parser = argparse.ArgumentParser(
         description="Descarga de datos climáticos de ESGF."
     )
@@ -521,7 +524,6 @@ if __name__ == "__main__":
 
     try:
         config = ConfiguracionBusqueda(source_id=args.source_id)
-        # Caché temporal con prefijo para evitar colisiones
         directorio_cache = f"_cache_esgf_{args.source_id.lower()}"
 
         descargador = DescargadorDatosESGF(
