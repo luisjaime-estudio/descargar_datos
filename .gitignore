@@ -1,4 +1,6 @@
 datos/
 *.nc*
 *.pyc
+*.csv
+*.xlsx
 __pycache__

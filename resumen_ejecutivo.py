@@ -58,7 +58,7 @@ def cargar_metadatos(archivos_nc: List[Path]) -> pd.DataFrame:
 
 def calcular_completitud(df: pd.DataFrame) -> Dict[str, Dict]:
     completitud: Dict[str, Dict] = {}
-    df = df[~df.get('parse_error', pd.Series(False, index=df.index)).fillna(False)]
+    df = df[~df.get('parse_error', pd.Series(False, index=df.index)).astype(bool)]
 
     for (source, variant), grupo in df.groupby(['source_id', 'variant_label']):
         anios = sorted(int(a) for a in grupo['init_year'].dropna().unique())

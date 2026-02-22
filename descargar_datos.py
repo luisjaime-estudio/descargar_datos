@@ -34,7 +34,9 @@ class ConfiguracionBusqueda:
     table_id: str = "Amon"
     variable_id: str = "pr"
     source_id: Optional[str] = None
-    grid_label: str = "gn"
+    grid_label: str = "gr"
+    variant_label: str = "r1i4p1f1"
+    sub_experiment_id: str = "s2003"
     latest: bool = True
 
     def __post_init__(self) -> None:
@@ -48,8 +50,11 @@ class ConfiguracionBusqueda:
             raise ValueError(f"[VALIDACIÓN] Configuración inválida: {e}") from e
 
     def a_dict(self) -> Dict[str, Any]:
-        """Convierte la configuración a un diccionario para intake-esgf."""
-        return asdict(self)
+        """Convierte la configuración a un diccionario para intake-esgf.
+        
+        Filtra los campos con valor None para evitar enviar parámetros vacíos.
+        """
+        return {k: v for k, v in asdict(self).items() if v is not None}
 
 
 class DescargadorDatosESGF:
