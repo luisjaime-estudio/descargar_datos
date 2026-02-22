@@ -34,9 +34,7 @@ class ConfiguracionBusqueda:
     table_id: str = "Amon"
     variable_id: str = "pr"
     source_id: Optional[str] = None
-    grid_label: str = "gr"
-    variant_label: str = "r1i4p1f1"
-    sub_experiment_id: str = "2005"
+    grid_label: str = "gn"
     latest: bool = True
 
     def __post_init__(self) -> None:

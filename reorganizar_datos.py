@@ -6,7 +6,7 @@ import re
 
 def reorganizar_datos():
     # Directorio base donde están las carpetas descargadas
-    base_dir = Path(r"f:\datos\Desktop\prueba_descarga") 
+    base_dir = Path(r"f:\datos\Desktop\GIT\descargar_datos") 
     
     # Directorio destino
     target_dir = base_dir / "datos"
@@ -17,7 +17,7 @@ def reorganizar_datos():
     print(f"Buscando directorios en: {base_dir}")
     
     # Encontrar carpetas de origen
-    source_dirs = [d for d in base_dir.iterdir() if d.is_dir() and d.name.startswith("datos_cmip6_")]
+    source_dirs = [d for d in base_dir.iterdir() if d.is_dir() and d.name.startswith("_cache_esgf")]
     
     files = []
     for d in source_dirs:
