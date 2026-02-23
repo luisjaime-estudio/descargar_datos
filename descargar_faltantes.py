@@ -103,32 +103,44 @@ def descargar_tarea(
     grid_label: str,
     latest: bool,
 ) -> tuple[str, str]:
-    """Descarga una tarea y devuelve (estado, detalle)."""
-    params: dict[str, Any] = {
-        "experiment_id": experiment_id,
-        "table_id": table_id,
-        "variable_id": variable_id,
-        "source_id": tarea.modelo,
-        "grid_label": grid_label,
-        "latest": latest,
-        "sub_experiment_id": tarea.sub_experiment_id,
-        "variant_label": tarea.ensamble,
-    }
+    """Descarga una tarea y devuelve (estado, detalle).
 
-    try:
+    Intenta primero con grid_label indicado (preferiblemente 'gn').
+    Si no hay resultados y grid_label=='gn', hace fallback automático a 'gr'.
+    """
+    def _intentar_descarga(gl: str) -> tuple[str, str]:
+        params: dict[str, Any] = {
+            "experiment_id": experiment_id,
+            "table_id": table_id,
+            "variable_id": variable_id,
+            "source_id": tarea.modelo,
+            "grid_label": gl,
+            "latest": latest,
+            "sub_experiment_id": tarea.sub_experiment_id,
+            "variant_label": tarea.ensamble,
+        }
         catalogo = ESGFCatalog()
         catalogo.search(**params)
 
         if len(catalogo.df) == 0:
-            return ("sin_resultados", "No hay resultados en ESGF para esa combinacion.")
+            return ("sin_resultados", f"No hay resultados en ESGF (grid_label={gl}).")
 
         intake_esgf.conf.set(break_on_error=False)
         datasets = catalogo.to_dataset_dict()
 
         if len(datasets) == 0:
-            return ("sin_descarga", "La busqueda devolvio filas, pero no se pudo descargar.")
+            return ("sin_descarga", f"Busqueda OK (grid_label={gl}) pero descarga fallida.")
 
-        return ("descargado", f"Datasets descargados: {len(datasets)}")
+        return ("descargado", f"Datasets descargados: {len(datasets)} (grid_label={gl})")
+
+    try:
+        estado, detalle = _intentar_descarga(grid_label)
+
+        # Fallback gn → gr si no hay resultados
+        if estado == "sin_resultados" and grid_label == "gn":
+            estado, detalle = _intentar_descarga("gr")
+
+        return (estado, detalle)
 
     except Exception as exc:
         return ("error", f"{type(exc).__name__}: {exc}")
