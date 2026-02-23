@@ -34,7 +34,7 @@ class ConfiguracionBusqueda:
     table_id: str = "Amon"
     variable_id: str = "pr"
     source_id: Optional[str] = None
-    grid_label: str = "gr"
+    grid_label: str = "gn"
     variant_label: str = "r1i4p1f1"
     latest: bool = True
 
@@ -182,11 +182,29 @@ class DescargadorDatosESGF:
             raise
 
     def _ejecutar_busqueda(self) -> None:
-        """Realiza la búsqueda en el catálogo con los parámetros configurados."""
+        """Realiza la búsqueda en el catálogo con los parámetros configurados.
+
+        Intenta primero con grid_label='gn'. Si no obtiene resultados,
+        hace fallback automático a grid_label='gr'.
+        """
         try:
             self._catalogo.search(**self._configuracion.a_dict())
             self._logger.info("Búsqueda completada. Resultados encontrados:")
             self._logger.info("\n%s", self._catalogo.df)
+
+            # Fallback: si no hay resultados con 'gn', reintentar con 'gr'
+            if len(self._catalogo.df) == 0 and self._configuracion.grid_label == "gn":
+                self._logger.warning(
+                    "No se encontraron resultados con grid_label='gn'. "
+                    "Reintentando con grid_label='gr'..."
+                )
+                self._configuracion.grid_label = "gr"
+                self._catalogo = ESGFCatalog()
+                self._catalogo.search(**self._configuracion.a_dict())
+                self._logger.info(
+                    "Búsqueda con fallback 'gr' completada. Resultados:"
+                )
+                self._logger.info("\n%s", self._catalogo.df)
         except Exception as e:
             self._logger.error(
                 "Fallo durante la búsqueda en el catálogo ESGF: %r", e
