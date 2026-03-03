@@ -35,7 +35,6 @@ class ConfiguracionBusqueda:
     variable_id: str = "pr"
     source_id: Optional[str] = None
     grid_label: str = "gn"
-    variant_label: str = "r1i4p1f1"
     latest: bool = True
 
     def __post_init__(self) -> None:
